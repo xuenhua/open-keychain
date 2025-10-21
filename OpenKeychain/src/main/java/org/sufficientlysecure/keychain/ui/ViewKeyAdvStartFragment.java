@@ -43,7 +43,7 @@ public class ViewKeyAdvStartFragment extends Fragment {
         try {
             String html = new Markdown4jProcessor().process(
                     getActivity().getResources().openRawResource(R.raw.advanced));
-            textView.setHtml(html, new HtmlResImageGetter(textView));
+            textView.setHtml(html, new HtmlResImageGetter(textView.getContext()));
         } catch (IOException e) {
             Timber.e(e, "IOException");
         }

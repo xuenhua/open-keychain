@@ -24,10 +24,15 @@ public abstract class KdfParameters {
 
     public abstract HashType getDigestAlgorithm();
     public abstract int getIterations();
+    @SuppressWarnings("mutable")
     public abstract byte[] getSaltPw1();
+    @SuppressWarnings("mutable")
     public abstract byte[] getSaltPw2();
+    @SuppressWarnings("mutable")
     public abstract byte[] getSaltPw3();
+    @SuppressWarnings("mutable")
     public abstract byte[] getHashUser();
+    @SuppressWarnings("mutable")
     public abstract byte[] getHashAdmin();
     public abstract boolean isHasUsesKdf();
 

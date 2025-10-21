@@ -51,7 +51,7 @@ public class HelpAboutFragment extends Fragment {
         try {
             String html = new Markdown4jProcessor().process(
                     getActivity().getResources().openRawResource(R.raw.help_about));
-            aboutTextView.setHtml(html, new HtmlResImageGetter(aboutTextView));
+            aboutTextView.setHtml(html, new HtmlResImageGetter(aboutTextView.getContext()));
         } catch (IOException e) {
             Timber.e(e, "IOException");
         }

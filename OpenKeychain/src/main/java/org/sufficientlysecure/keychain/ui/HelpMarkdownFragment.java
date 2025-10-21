@@ -68,7 +68,7 @@ public class HelpMarkdownFragment extends Fragment {
         try {
             String html = new Markdown4jProcessor().process(
                     getActivity().getResources().openRawResource(mHtmlFile));
-            text.setHtml(html, new HtmlResImageGetter(text));
+            text.setHtml(html, new HtmlResImageGetter(text.getContext()));
         } catch (IOException e) {
             Timber.e(e, "IOException");
         }

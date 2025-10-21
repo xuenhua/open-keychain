@@ -30,6 +30,7 @@ public abstract class UnifiedKeyInfo {
 
     public abstract long master_key_id();
 
+    @SuppressWarnings("mutable")
     public abstract byte[] fingerprint();
 
     @Nullable

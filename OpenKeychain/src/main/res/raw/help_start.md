@@ -7,10 +7,10 @@ To use OpenKeychain with K-9 Mail, you want to follow these steps:
   3. Click on "OpenPGP Provider" and select OpenKeychain from the list.
 
 ## I found a bug in OpenKeychain!
-Please report the bug using the [issue tracker of OpenKeychain](https://github.com/openpgp-keychain/openpgp-keychain/issues).
+Please report the bug using the [issue tracker of OpenKeychain](https://github.com/xuenhua/openpgp-keychain/issues).
 
 ## Contribute
-If you want to help us developing OpenKeychain by contributing code [follow our small guide on Github](https://github.com/openpgp-keychain/openpgp-keychain#contribute-code).
+If you want to help us developing OpenKeychain by contributing code [follow our small guide on Github](https://github.com/xuenhua/openpgp-keychain#contribute-code).
 
 ## Translations
 Help translating OpenKeychain! Everybody can participate at [OpenKeychain on Transifex](https://www.transifex.com/projects/p/open-keychain/).

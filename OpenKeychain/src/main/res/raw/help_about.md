@@ -8,6 +8,9 @@ License: GPLv3+
 
 [//]: # (NOTE: Alphabetic ordering)
 
+## Build
+  * xuenhua
+
 ## Main Developers
   * Dominik Schürmann (Maintainer)
   * Vincent Breitmoser
@@ -57,4 +60,5 @@ License: GPLv3+
   * 'Senecaso'
   * Signe Rüsch
   * Sreeram Boyapati
-  * 'steelman'
+  * 'steelman' 
+  * xuenhua

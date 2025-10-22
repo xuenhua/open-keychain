@@ -8,6 +8,9 @@
 
 [//]: # (备注: 字母顺序)
 
+## 打包
+  * xuenhua
+
 ## 主要开发者
   * Dominik Schürmann (维护者)
   * Vincent Breitmoser
@@ -58,3 +61,4 @@
   * Signe Rüsch
   * Sreeram Boyapati
   * 'steelman'
+  * xuenhua

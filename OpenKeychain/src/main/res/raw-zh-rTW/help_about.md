@@ -8,11 +8,14 @@
 
 [//]: # (備註： 字母順序排序)
 
-##主要開發者
+## 打包
+  * xuenhua
+
+## 主要開發者
   * Dominik Schürmann (維護人)
   * Vincent Breitmoser
 
-主要開發者
+## 主要貢獻者
   * Adithya Abraham Philip
   * Andrea Torlaschi
   * Arnaud Fontaine
@@ -58,3 +61,4 @@
   * Signe Rüsch
   * Sreeram Boyapati
   * 'steelman'
+  *  xuenhua

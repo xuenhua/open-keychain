@@ -7,10 +7,10 @@
   3. 選擇“OpenPGP提供者”，並從清單中選取OpenKeychain。
 
 ##我在OpenKeychain發現錯誤！
-請利用 [OpenKeychain問題追蹤] (https://github.com/xuenhua/openpgp-keychain/issues) 來回報程式的錯誤。
+請利用 [OpenKeychain問題追蹤] (https://github.com/xuenhua/open-keychain/issues) 來回報程式的錯誤。
 
 ##貢獻
-如果你願意協助我們開發 OpenKeychain 的原始碼，[請參考我們Github上的簡短指南] (https://github.com/xuenhua/openpgp-keychain#contribute-code)。
+如果你願意協助我們開發 OpenKeychain 的原始碼，[請參考我們Github上的簡短指南] (https://github.com/xuenhua/open-keychain#contribute-code)。
 
 ##翻譯
 請協助翻譯OpenKeychain！每個人都可以在[OpenKeychain on Transifex](https://www.transifex.com/projects/p/open-keychain/)貢獻一己之力。

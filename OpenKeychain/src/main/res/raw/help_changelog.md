@@ -1,5 +1,8 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.3
+  * Add Encrypt/Decrypt Shortcut 
+
 ## 6.0.4.2
   * Fix decrypt OpenPgpV5Data error
 

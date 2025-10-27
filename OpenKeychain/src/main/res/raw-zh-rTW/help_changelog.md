@@ -1,5 +1,8 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.3
+  * 增加 加密/解密 快捷方式
+
 ## 6.0.4.2
   * 解决 OpenPgpV5Data 解密错误
 

@@ -33,4 +33,15 @@
             android:targetClass="org.sufficientlysecure.keychain.ui.DebugActionsActivity"
             android:targetPackage="org.sufficientlysecure.keychain.debug" />
     </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/status_lock_open_24dp"
+        android:shortcutId="encrypt_decrypt"
+        android:shortcutLongLabel="@string/nav_encrypt_decrypt"
+        android:shortcutShortLabel="@string/nav_encrypt_decrypt">
+        <intent
+            android:action="org.sufficientlysecure.keychain.action.DECRYPT_ENCRYPT"
+            android:targetClass="org.sufficientlysecure.keychain.ui.Encrypt_DecryptActivity"
+            android:targetPackage="org.sufficientlysecure.keychain.debug" />
+    </shortcut>
 </shortcuts>

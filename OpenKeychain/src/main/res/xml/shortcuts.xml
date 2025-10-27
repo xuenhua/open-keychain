@@ -22,4 +22,18 @@
             android:targetClass="org.sufficientlysecure.keychain.ui.EncryptFilesActivity"
             android:targetPackage="org.sufficientlysecure.keychain" />
     </shortcut>
+
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/status_lock_open_24dp"
+        android:shortcutId="encrypt_decrypt"
+        android:shortcutLongLabel="@string/nav_encrypt_decrypt"
+        android:shortcutShortLabel="@string/nav_encrypt_decrypt">
+        <intent
+            android:action="org.sufficientlysecure.keychain.action.ENCRYPT_DECRYPT"
+            android:targetClass="org.sufficientlysecure.keychain.ui.Encrypt_DecryptActivity"
+            android:targetPackage="org.sufficientlysecure.keychain" />
+    </shortcut>
+
 </shortcuts>

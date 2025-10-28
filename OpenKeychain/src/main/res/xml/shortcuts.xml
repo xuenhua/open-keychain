@@ -23,15 +23,26 @@
             android:targetPackage="org.sufficientlysecure.keychain" />
     </shortcut>
 
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_content_paste_grey_24dp"
+        android:shortcutId="decrypt_from_clipboard"
+        android:shortcutLongLabel="@string/btn_decrypt_clipboard"
+        android:shortcutShortLabel="@string/btn_decrypt_clipboard">
+        <intent
+            android:action="action.DECRYPT_FROM_CLIPBOARD"
+            android:targetClass="org.sufficientlysecure.keychain.ui.Encrypt_DecryptActivity"
+            android:targetPackage="org.sufficientlysecure.keychain" />
+    </shortcut>
 
     <shortcut
         android:enabled="true"
         android:icon="@drawable/status_lock_open_24dp"
-        android:shortcutId="encrypt_decrypt"
-        android:shortcutLongLabel="@string/nav_encrypt_decrypt"
-        android:shortcutShortLabel="@string/nav_encrypt_decrypt">
+        android:shortcutId="decrypt_from_file"
+        android:shortcutLongLabel="@string/btn_decrypt_files"
+        android:shortcutShortLabel="@string/btn_decrypt_files">
         <intent
-            android:action="org.sufficientlysecure.keychain.action.ENCRYPT_DECRYPT"
+            android:action="action.DECRYPT_FROM_FILE"
             android:targetClass="org.sufficientlysecure.keychain.ui.Encrypt_DecryptActivity"
             android:targetPackage="org.sufficientlysecure.keychain" />
     </shortcut>

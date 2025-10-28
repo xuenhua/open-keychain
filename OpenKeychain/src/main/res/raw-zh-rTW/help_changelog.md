@@ -1,5 +1,9 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.4
+  * 增加“从文件导入”快捷方式
+  * 增加“从剪贴板导入”快捷方式
+
 ## 6.0.4.3
   * 增加 加密/解密 快捷方式
 

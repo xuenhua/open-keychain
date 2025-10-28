@@ -19,6 +19,10 @@ package org.sufficientlysecure.keychain.ui;
 
 
 import android.os.Bundle;
+import android.os.Handler;
+//import android.util.Log;
+import android.view.View;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import org.sufficientlysecure.keychain.R;
@@ -27,9 +31,14 @@ import org.sufficientlysecure.keychain.ui.base.BaseActivity;
 
 public class Encrypt_DecryptActivity extends BaseActivity {
 
+    final String ACTION_DECRYPT_FROM_FILE="action.DECRYPT_FROM_FILE";
+    //final String ACTION_DECRYPT_FROM_CLIPBOARD="action.DECRYPT_FROM_CLIPBOARD";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        String action = getIntent().getAction();
+        //Log.d("action=",action);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -38,6 +47,14 @@ public class Encrypt_DecryptActivity extends BaseActivity {
             transaction.replace(R.id.main_fragment_container, frag);
 
             transaction.commit();
+
+            new Handler().postDelayed(()->{
+                int btn_id=R.id.decrypt_from_clipboard;
+                if(action!=null && action.equals(ACTION_DECRYPT_FROM_FILE)){
+                    btn_id=R.id.decrypt_files;
+                }
+                View clipBtn =frag.getView().findViewById(btn_id);
+                clipBtn.performClick();}, 100);
         }
 
     }

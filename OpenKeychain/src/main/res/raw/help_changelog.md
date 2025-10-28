@@ -1,5 +1,9 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.4
+  * Add "Read from clipboard" Shortcut
+  * Add "Select input file" Shortcut
+
 ## 6.0.4.3
   * Add Encrypt/Decrypt Shortcut 
 

@@ -31,8 +31,10 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import org.sufficientlysecure.keychain.KeychainApplication;
 import timber.log.Timber;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Copied from Bitcoin Wallet
@@ -74,7 +76,7 @@ public class QrCodeUtils {
                 for (int y = 0; y < height; y++) {
                     final int offset = y * width;
                     for (int x = 0; x < width; x++) {
-                        pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.TRANSPARENT;
+                        pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.WHITE;
                     }
                 }
 
@@ -90,6 +92,33 @@ public class QrCodeUtils {
             return null;
         }
 
+    }
+
+    public static Bitmap generateQRCode(String text, int size) {
+        try {
+            // 设置二维码参数
+            Map<EncodeHintType, Object> hints = new HashMap<>();
+            hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.L); // 关键：设置L级纠错
+            hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+            hints.put(EncodeHintType.MARGIN, 5); // 设置边距
+            // 创建二维码生成器
+            QRCodeWriter qrCodeWriter = new QRCodeWriter();
+            // 生成位矩阵
+            BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, size, size, hints);
+            //BitMatrix bitMatrix = new MultiFormatWriter().encode(text, BarcodeFormat.QR_CODE, size, size, hints);
+            // 转 Bitmap
+            Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+
+            for (int x = 0; x < size; x++) {
+                for (int y = 0; y < size; y++) {
+                    bitmap.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            return bitmap;
+        } catch (WriterException e) {
+            Timber.e(e, "QrCodeUtils");
+            return null;
+        }
     }
 
 }

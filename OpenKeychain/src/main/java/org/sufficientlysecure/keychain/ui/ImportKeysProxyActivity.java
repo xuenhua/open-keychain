@@ -18,6 +18,9 @@
 package org.sufficientlysecure.keychain.ui;
 
 import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.nfc.NdefMessage;
@@ -157,12 +160,25 @@ public class ImportKeysProxyActivity extends FragmentActivity
         // example: openpgp4fpr:73EE2314F65FA92EC2390D3A718C070100012282
         if (uri == null || uri.getScheme() == null ||
                 !uri.getScheme().toLowerCase(Locale.ENGLISH).equals(Constants.FINGERPRINT_SCHEME)) {
-            SingletonResult result = new SingletonResult(
-                    SingletonResult.RESULT_ERROR, LogType.MSG_WRONG_QR_CODE);
-            Intent intent = new Intent();
-            intent.putExtra(SingletonResult.EXTRA_RESULT, result);
-            returnResult(intent);
-            return;
+            //Scan QR to Decrypt
+            if(uri!=null && uri.toString().contains("-----BEGIN PGP MESSAGE-----") && uri.toString().contains("-----BEGIN PGP MESSAGE-----")){
+
+                Intent intent = new Intent(this,Encrypt_DecryptActivity.class);
+                intent.setAction("action.DECRYPT_FROM_CLIPBOARD");
+                ClipboardManager clipMan = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(Constants.CLIPBOARD_LABEL, uri.toString());
+                clipMan.setPrimaryClip(clip);
+                startActivity(intent);
+                finish();
+            }else{
+                SingletonResult result = new SingletonResult(
+                        SingletonResult.RESULT_ERROR, LogType.MSG_WRONG_QR_CODE);
+                Intent intent = new Intent();
+                intent.putExtra(SingletonResult.EXTRA_RESULT, result);
+                returnResult(intent);
+                return;
+            }
+
         }
 
         final String fingerprintHex = uri.getEncodedSchemeSpecificPart().toLowerCase(Locale.ENGLISH);

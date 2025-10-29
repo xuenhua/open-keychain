@@ -18,6 +18,8 @@
 package org.sufficientlysecure.keychain.ui;
 
 
+import org.sufficientlysecure.keychain.provider.TemporaryFileProvider;
+import org.sufficientlysecure.keychain.ui.util.QrCodeUtils;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,7 +29,10 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -53,6 +58,7 @@ import org.sufficientlysecure.keychain.ui.util.Notify.ActionListener;
 import org.sufficientlysecure.keychain.ui.util.Notify.Style;
 import org.sufficientlysecure.keychain.util.Passphrase;
 import org.sufficientlysecure.keychain.util.Preferences;
+import timber.log.Timber;
 
 public class EncryptTextFragment
         extends CachingCryptoOperationFragment<SignEncryptParcel, SignEncryptResult> {
@@ -63,6 +69,7 @@ public class EncryptTextFragment
     public static final String ARG_RETURN_PROCESS_TEXT = "return_process_text";
 
     private boolean mShareAfterEncrypt;
+    private boolean mShareQRAfterEncrypt;
     private boolean mReturnProcessTextAfterEncrypt;
     private boolean mUseCompression;
     private boolean mSelfEncrypt;
@@ -201,6 +208,13 @@ public class EncryptTextFragment
             case R.id.encrypt_share: {
                 hideKeyboard();
                 mShareAfterEncrypt = true;
+                cryptoOperation(CryptoInputParcel.createCryptoInputParcel(new Date()));
+                break;
+            }
+            case R.id.encrypt_save: {
+                hideKeyboard();
+                mShareAfterEncrypt = true;
+                mShareQRAfterEncrypt=true;
                 cryptoOperation(CryptoInputParcel.createCryptoInputParcel(new Date()));
                 break;
             }
@@ -374,9 +388,17 @@ public class EncryptTextFragment
         hideKeyboard();
 
         if (mShareAfterEncrypt) {
-            // Share encrypted message/file
-            startActivity(Intent.createChooser(createSendIntent(result.getResultBytes()),
-                    getString(R.string.title_share_message)));
+            if(mShareQRAfterEncrypt){
+                String str=new String(result.getResultBytes());
+                Bitmap qrCode =QrCodeUtils.generateQRCode(str,945);
+                if (qrCode != null) {
+                    shareQRCode(qrCode);
+                }
+            }else{
+                // Share encrypted message/file
+                startActivity(Intent.createChooser(createSendIntent(result.getResultBytes()),
+                        getString(R.string.title_share_message)));
+            }
         } else if (mReturnProcessTextAfterEncrypt) {
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Intent.EXTRA_PROCESS_TEXT, new String(result.getResultBytes()));
@@ -387,6 +409,46 @@ public class EncryptTextFragment
             copyToClipboard(result);
         }
 
+    }
+
+    private void shareQRCode(Bitmap qrCodeBitmap) {
+        try {
+            // 将二维码保存到临时文件
+            String qrmsgfile="qrcodemsg.png";
+            String mimeType="image/png";
+
+            TemporaryFileProvider shareFileProv = new TemporaryFileProvider();
+            Uri qrUri=TemporaryFileProvider.createFile(getActivity(), qrmsgfile,mimeType);
+            ParcelFileDescriptor pfd =shareFileProv.openFile(qrUri,"w");
+
+
+            if (pfd!=null){
+                ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(pfd);
+                try {
+                    // 将二维码写入文件
+                    qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, autoCloseOutputStream);
+                    // autoCloseOutputStream 会在作用域结束时自动关闭
+                } catch (Exception e) {
+                    Timber.e(e,"Error writing QR code to file");
+                    Notify.create(getActivity(), "Error writing QR code to file", Style.ERROR).show();
+                    return;
+                }
+
+            }
+
+            // 创建分享Intent
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType(mimeType);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, qrUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_qr_code_dialog_title)));
+
+
+        } catch (Exception e) {
+            Timber.e(e,"Error creating QR code file");
+            Notify.create(getActivity(), "Error creating QR code file", Style.ERROR).show();
+        }
     }
 
 }

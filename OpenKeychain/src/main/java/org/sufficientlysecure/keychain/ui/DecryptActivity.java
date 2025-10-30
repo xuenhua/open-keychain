@@ -18,6 +18,8 @@
 package org.sufficientlysecure.keychain.ui;
 
 
+import org.sufficientlysecure.keychain.ui.util.QrCodeUtils;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -32,12 +34,16 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
+
 import org.sufficientlysecure.keychain.Constants;
 import org.sufficientlysecure.keychain.R;
 import org.sufficientlysecure.keychain.pgp.PgpHelper;
 import org.sufficientlysecure.keychain.provider.TemporaryFileProvider;
 import org.sufficientlysecure.keychain.ui.base.BaseActivity;
 import org.sufficientlysecure.keychain.util.FileHelper;
+
+import timber.log.Timber;
 
 
 public class DecryptActivity extends BaseActivity {
@@ -97,6 +103,24 @@ public class DecryptActivity extends BaseActivity {
                     // override uri to get stream from send
                     if (intent.hasExtra(Intent.EXTRA_STREAM)) {
                         uris.add(intent.getParcelableExtra(Intent.EXTRA_STREAM));
+
+                        String mimetype = intent.getType();
+
+                        if(mimetype.startsWith("image/")){
+                            Timber.d("----Decrypt QR-----");
+                            String qrStr=QrCodeUtils.decodeQRCodeFromUri(uris.get(0),getContentResolver());
+                            if(qrStr!=null && qrStr.contains("-----BEGIN PGP MESSAGE-----") && qrStr.contains("-----END PGP MESSAGE-----")){
+                                try {
+                                    Uri uri = readToTempFile(qrStr);
+                                    if (uri != null) {
+                                        uris.add(uri);
+                                    }
+                                } catch (IOException e) {
+                                    throw new RuntimeException(e);
+                                }
+                            }
+                        }
+
                     } else if (intent.hasExtra(Intent.EXTRA_TEXT)) {
                         String text = intent.getStringExtra(Intent.EXTRA_TEXT);
                         Uri uri = readToTempFile(text);

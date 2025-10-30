@@ -161,7 +161,7 @@ public class ImportKeysProxyActivity extends FragmentActivity
         if (uri == null || uri.getScheme() == null ||
                 !uri.getScheme().toLowerCase(Locale.ENGLISH).equals(Constants.FINGERPRINT_SCHEME)) {
             //Scan QR to Decrypt
-            if(uri!=null && uri.toString().contains("-----BEGIN PGP MESSAGE-----") && uri.toString().contains("-----BEGIN PGP MESSAGE-----")){
+            if(uri!=null && uri.toString().contains("-----BEGIN PGP MESSAGE-----") && uri.toString().contains("-----END PGP MESSAGE-----")){
 
                 Intent intent = new Intent(this,Encrypt_DecryptActivity.class);
                 intent.setAction("action.DECRYPT_FROM_CLIPBOARD");

@@ -1,5 +1,9 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.6
+  * 新增加密文本保存二维码
+  * 新增二维码发送到解密
+
 ## 6.0.4.5
   * 新增加密文本二维码分享
   * 新增扫描二维码解密文本

@@ -17,20 +17,28 @@
 
 package org.sufficientlysecure.keychain.ui.util;
 
+import android.content.ContentResolver;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 
 import com.google.zxing.BarcodeFormat;
+import com.google.zxing.BinaryBitmap;
 import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatReader;
+import com.google.zxing.RGBLuminanceSource;
+import com.google.zxing.Result;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 import org.sufficientlysecure.keychain.KeychainApplication;
 import timber.log.Timber;
 
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -117,6 +125,63 @@ public class QrCodeUtils {
             return bitmap;
         } catch (WriterException e) {
             Timber.e(e, "QrCodeUtils");
+            return null;
+        }
+    }
+
+    public static String decodeQRCodeFromUri(Uri uri, ContentResolver contentresolver) {
+        try {
+            // 从 Uri 读取图片
+            Bitmap bitmap = getBitmapFromUri(uri,contentresolver);
+            if (bitmap == null) {
+                return null;
+            }
+
+            // 解析二维码
+            String qrContent = decodeQRCodeFromBitmap(bitmap);
+            return qrContent;
+
+        } catch (Exception e) {
+            Timber.e(e, "Error decoding QR code from URI: %s", uri);
+            return null;
+        }
+    }
+
+    private static Bitmap getBitmapFromUri(Uri uri,ContentResolver contentresolver) {
+        try {
+            InputStream inputStream = contentresolver.openInputStream(uri);
+            if (inputStream == null) {
+                return null;
+            }
+
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            inputStream.close();
+            return bitmap;
+
+        } catch (Exception e) {
+            Timber.e(e, "Error reading bitmap from URI: %s", uri);
+            return null;
+        }
+    }
+
+    private static String decodeQRCodeFromBitmap(Bitmap bitmap) {
+        try {
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            int[] pixels = new int[width * height];
+
+            bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+            RGBLuminanceSource source = new RGBLuminanceSource(width, height, pixels);
+            BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(source));
+
+            MultiFormatReader reader = new MultiFormatReader();
+            Result result = reader.decode(binaryBitmap);
+
+            return result.getText();
+
+        } catch (Exception e) {
+            Timber.e(e, "Error decoding QR code from bitmap");
             return null;
         }
     }

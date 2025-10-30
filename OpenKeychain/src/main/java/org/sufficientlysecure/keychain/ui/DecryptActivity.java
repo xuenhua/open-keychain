@@ -114,6 +114,8 @@ public class DecryptActivity extends BaseActivity {
                                     Uri uri = readToTempFile(qrStr);
                                     if (uri != null) {
                                         uris.add(uri);
+                                        //remove the origin img data , replace by Decrypt Text
+                                        uris.remove(0);
                                     }
                                 } catch (IOException e) {
                                     throw new RuntimeException(e);

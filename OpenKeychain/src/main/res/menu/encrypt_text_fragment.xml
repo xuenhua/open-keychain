@@ -45,6 +45,12 @@
         android:title="@string/share_qr_code_dialog_title"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/btn_encrypt_save_qr"
+        android:orderInCategory="1"
+        android:title="@string/btn_encrypt_save_qr"
+        app:showAsAction="ifRoom" />
+
     <!--<item-->
         <!--android:id="@+id/check_hidden_recipients"-->
         <!--android:title="@string/label_hidden_recipients"-->

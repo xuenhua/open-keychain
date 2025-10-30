@@ -89,6 +89,7 @@
     <string name="btn_save_default">"Save as default"</string>
     <string name="btn_saved">"Saved!"</string>
     <string name="btn_not_matching">"Not matching"</string>
+    <string name="btn_encrypt_save_qr">"Save as QR"</string>
 
     <!-- Shortcut Strings -->
     <string name="shortcut_debug">Debug Actions</string>

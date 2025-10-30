@@ -83,7 +83,8 @@
   <string name="btn_saved">已儲存</string>
   <string name="btn_not_matching">不符合</string>
   <!--Shortcut Strings-->
-  <string name="shortcut_debug">除錯選項</string>
+    <string name="btn_encrypt_save_qr">儲存二維條碼</string>
+    <string name="shortcut_debug">除錯選項</string>
   <!--Content Description-->
   <string name="cd_encrypt_files">加密檔案</string>
   <string name="cd_exchange_keys">交換金鑰</string>

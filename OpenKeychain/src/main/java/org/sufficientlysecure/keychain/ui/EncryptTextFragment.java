@@ -20,6 +20,9 @@ package org.sufficientlysecure.keychain.ui;
 
 import org.sufficientlysecure.keychain.provider.TemporaryFileProvider;
 import org.sufficientlysecure.keychain.ui.util.QrCodeUtils;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -56,6 +59,7 @@ import org.sufficientlysecure.keychain.ui.base.CachingCryptoOperationFragment;
 import org.sufficientlysecure.keychain.ui.util.Notify;
 import org.sufficientlysecure.keychain.ui.util.Notify.ActionListener;
 import org.sufficientlysecure.keychain.ui.util.Notify.Style;
+import org.sufficientlysecure.keychain.util.FileHelper;
 import org.sufficientlysecure.keychain.util.Passphrase;
 import org.sufficientlysecure.keychain.util.Preferences;
 import timber.log.Timber;
@@ -70,12 +74,18 @@ public class EncryptTextFragment
 
     private boolean mShareAfterEncrypt;
     private boolean mShareQRAfterEncrypt;
+    private boolean mSaveQRAfterEncrypt;
     private boolean mReturnProcessTextAfterEncrypt;
     private boolean mUseCompression;
     private boolean mSelfEncrypt;
     private boolean mHiddenRecipients = false;
 
     private String mMessage = "";
+
+    private static final String mimeTypeQR="image/png";
+    private static final int REQUEST_CODE_OUTPUT = 0x00007007;
+
+    private static final String  qrmsgfile="qrcodemsg.png";
 
     /**
      * Creates new instance of this fragment
@@ -215,6 +225,13 @@ public class EncryptTextFragment
                 hideKeyboard();
                 mShareAfterEncrypt = true;
                 mShareQRAfterEncrypt=true;
+                cryptoOperation(CryptoInputParcel.createCryptoInputParcel(new Date()));
+                break;
+            }
+            case R.id.btn_encrypt_save_qr: {
+                hideKeyboard();
+                mShareAfterEncrypt = true;
+                mSaveQRAfterEncrypt=true;
                 cryptoOperation(CryptoInputParcel.createCryptoInputParcel(new Date()));
                 break;
             }
@@ -388,11 +405,19 @@ public class EncryptTextFragment
         hideKeyboard();
 
         if (mShareAfterEncrypt) {
-            if(mShareQRAfterEncrypt){
+            if(mShareQRAfterEncrypt||mSaveQRAfterEncrypt){
                 String str=new String(result.getResultBytes());
                 Bitmap qrCode =QrCodeUtils.generateQRCode(str,945);
-                if (qrCode != null) {
-                    shareQRCode(qrCode);
+                if(qrCode!=null){
+                    Uri qrUir=getQRUir(qrCode);
+                    if(qrUir!=null){
+                        if(mSaveQRAfterEncrypt){
+                            saveQRCode(qrUir);
+                        }else{
+                            shareQRCode(qrUir);
+                        }
+                    }
+
                 }
             }else{
                 // Share encrypted message/file
@@ -411,16 +436,13 @@ public class EncryptTextFragment
 
     }
 
-    private void shareQRCode(Bitmap qrCodeBitmap) {
+    private Uri getQRUir(Bitmap qrCodeBitmap){
+        Uri qrUri=null;
         try {
             // 将二维码保存到临时文件
-            String qrmsgfile="qrcodemsg.png";
-            String mimeType="image/png";
-
             TemporaryFileProvider shareFileProv = new TemporaryFileProvider();
-            Uri qrUri=TemporaryFileProvider.createFile(getActivity(), qrmsgfile,mimeType);
+            qrUri=TemporaryFileProvider.createFile(getActivity(), qrmsgfile,mimeTypeQR);
             ParcelFileDescriptor pfd =shareFileProv.openFile(qrUri,"w");
-
 
             if (pfd!=null){
                 ParcelFileDescriptor.AutoCloseOutputStream autoCloseOutputStream = new ParcelFileDescriptor.AutoCloseOutputStream(pfd);
@@ -431,23 +453,98 @@ public class EncryptTextFragment
                 } catch (Exception e) {
                     Timber.e(e,"Error writing QR code to file");
                     Notify.create(getActivity(), "Error writing QR code to file", Style.ERROR).show();
-                    return;
+                    return null;
                 }
-
             }
-
-            // 创建分享Intent
-            Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.setType(mimeType);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, qrUri);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_qr_code_dialog_title)));
-
 
         } catch (Exception e) {
             Timber.e(e,"Error creating QR code file");
             Notify.create(getActivity(), "Error creating QR code file", Style.ERROR).show();
+        }
+        return qrUri;
+    }
+    private void shareQRCode(Uri qrUri) {
+            // 创建分享Intent
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType(mimeTypeQR);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, qrUri);
+            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_qr_code_dialog_title)));
+    }
+
+    private void saveQRCode(Uri qrUri){
+
+        // 将 qrUri 保存到 fragment 的 arguments 中
+        Bundle args = getArguments();
+        if (args == null) {
+            args = new Bundle();
+        }
+        args.putString("qr_uri", qrUri.toString());
+        setArguments(args);
+
+        // 使用正确的参数调用saveDocument方法
+        FileHelper.saveDocument(this, qrmsgfile, mimeTypeQR, REQUEST_CODE_OUTPUT);
+    }
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_OUTPUT) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                Uri outputUri = data.getData();
+                if (outputUri != null) {
+                    // 从 arguments 中获取 qrUri
+                    Bundle args = getArguments();
+                    if (args != null && args.containsKey("qr_uri")) {
+                        String qrUriString = args.getString("qr_uri");
+                        Uri qrUri = Uri.parse(qrUriString);
+
+                        // 将临时文件复制到用户选择的位置
+                        try {
+                            Context context = requireContext();
+                            // 从临时文件读取
+                            ParcelFileDescriptor inputPfd = context.getContentResolver()
+                                    .openFileDescriptor(qrUri, "r");
+
+                            // 写入用户选择的文件位置
+                            ParcelFileDescriptor outputPfd = context.getContentResolver()
+                                    .openFileDescriptor(outputUri, "w");
+
+                            if (inputPfd != null && outputPfd != null) {
+                                // 复制文件内容 - 使用文件流方式
+                                FileInputStream inputStream = new FileInputStream(inputPfd.getFileDescriptor());
+                                FileOutputStream outputStream = new FileOutputStream(outputPfd.getFileDescriptor());
+
+                                byte[] buffer = new byte[1024];
+                                int length;
+                                while ((length = inputStream.read(buffer)) > 0) {
+                                    outputStream.write(buffer, 0, length);
+                                }
+
+                                inputStream.close();
+                                outputStream.close();
+
+                                // 关闭文件描述符
+                                inputPfd.close();
+                                outputPfd.close();
+
+                                Notify.create(getActivity(),
+                                                R.string.file_saved,
+                                                Notify.Style.OK)
+                                        .show();
+                            }
+                        } catch (Exception e) {
+                            Timber.e(e, "Error saving QR code file");
+                            Notify.create(getActivity(),
+                                            R.string.error_saving_file,
+                                            Notify.Style.ERROR)
+                                    .show();
+                        }
+                    }
+                }
+            }
         }
     }
 

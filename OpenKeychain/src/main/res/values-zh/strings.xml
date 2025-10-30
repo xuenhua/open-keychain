@@ -83,6 +83,7 @@
   <string name="btn_saved">已保存！</string>
   <string name="btn_not_matching">不匹配</string>
   <!--Shortcut Strings-->
+  <string name="btn_encrypt_save_qr">保存二维码</string>
   <string name="shortcut_debug">调试行为</string>
   <!--Content Description-->
   <string name="cd_encrypt_files">加密文件</string>
@@ -412,10 +413,10 @@
     <item quantity="other">%d 个密钥认证失败！</item>
   </plurals>
   <!--Intent labels-->
-  <string name="intent_decrypt_file">OpenKeychain: 解密文件</string>
-  <string name="intent_import_key">OpenKeychain: 导入密钥</string>
-  <string name="intent_send_encrypt">OpenKeychain: 加密</string>
-  <string name="intent_send_decrypt">OpenKeychain: 解密</string>
+  <string name="intent_decrypt_file">解密文件</string>
+  <string name="intent_import_key">导入密钥</string>
+  <string name="intent_send_encrypt">加密</string>
+  <string name="intent_send_decrypt">解密</string>
   <string name="intent_autocrypt_setup">导入自加密安装信息</string>
   <!--Remote API-->
     <string name="api_settings_create_key">创建密钥</string>

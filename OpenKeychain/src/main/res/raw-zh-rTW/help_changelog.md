@@ -1,5 +1,9 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.7
+  * 从文件导入增加支持QR
+  * 解决解密二维码时显示2次页面
+
 ## 6.0.4.6
   * 新增加密文本保存二维码
   * 新增二维码发送到解密

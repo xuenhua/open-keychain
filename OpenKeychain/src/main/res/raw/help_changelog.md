@@ -1,8 +1,8 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
-## 6.0.4.6
-  * Add Save as QR for Encrypted Text
-  * Add Send Encrypted QR to Decrypt
+## 6.0.4.7
+  * Add QR Support with 'Select Input File'
+  * Fix: display 2 times when decrypt QR
 
 ## 6.0.4.5
   * Add encrypted text QR code sharing

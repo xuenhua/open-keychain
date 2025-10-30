@@ -95,8 +95,8 @@ android {
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 34
-        versionCode 60406
-        versionName "6.0.4.6"
+        versionCode 60407
+        versionName "6.0.4.7"
         applicationId "org.sufficientlysecure.keychain"
         // the androidjunitrunner is broken regarding coverage, see here:
         // https://code.google.com/p/android/issues/detail?id=170607

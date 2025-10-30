@@ -105,23 +105,7 @@ public class DecryptActivity extends BaseActivity {
                         uris.add(intent.getParcelableExtra(Intent.EXTRA_STREAM));
 
                         String mimetype = intent.getType();
-
-                        if(mimetype.startsWith("image/")){
-                            Timber.d("----Decrypt QR-----");
-                            String qrStr=QrCodeUtils.decodeQRCodeFromUri(uris.get(0),getContentResolver());
-                            if(qrStr!=null && qrStr.contains("-----BEGIN PGP MESSAGE-----") && qrStr.contains("-----END PGP MESSAGE-----")){
-                                try {
-                                    Uri uri = readToTempFile(qrStr);
-                                    if (uri != null) {
-                                        uris.add(uri);
-                                        //remove the origin img data , replace by Decrypt Text
-                                        uris.remove(0);
-                                    }
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-                        }
+                        readQRFile(mimetype,uris);
 
                     } else if (intent.hasExtra(Intent.EXTRA_TEXT)) {
                         String text = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -188,18 +172,24 @@ public class DecryptActivity extends BaseActivity {
                 case Constants.DECRYPT_DATA:
                 default:
                     Uri uri = intent.getData();
-
-                    isAutocryptSetup = APPLICATION_AUTOCRYPT_SETUP.equalsIgnoreCase(intent.getType());
-
-                    if (uri != null) {
-
-                        if ("com.android.email.attachmentprovider".equals(uri.getHost())) {
-                            Toast.makeText(this, R.string.error_reading_aosp, Toast.LENGTH_LONG).show();
-                            finish();
-                            return;
-                        }
-
+                    //check QR
+                    String mimetype = getContentResolver().getType(uri);
+                    if(mimetype!=null && mimetype.startsWith("image/")){
                         uris.add(uri);
+                        readQRFile(mimetype,uris);
+                    }else{
+                        isAutocryptSetup = APPLICATION_AUTOCRYPT_SETUP.equalsIgnoreCase(intent.getType());
+
+                        if (uri != null) {
+
+                            if ("com.android.email.attachmentprovider".equals(uri.getHost())) {
+                                Toast.makeText(this, R.string.error_reading_aosp, Toast.LENGTH_LONG).show();
+                                finish();
+                                return;
+                            }
+
+                            uris.add(uri);
+                        }
                     }
 
             }
@@ -220,6 +210,25 @@ public class DecryptActivity extends BaseActivity {
 
         displayListFragment(uris, canDelete, isAutocryptSetup);
 
+    }
+
+    private void readQRFile(String mimetype ,ArrayList<Uri> uris){
+        if(mimetype.startsWith("image/")){
+            Timber.d("----Decrypt QR-----");
+            String qrStr=QrCodeUtils.decodeQRCodeFromUri(uris.get(0),getContentResolver());
+            if(qrStr!=null && qrStr.contains("-----BEGIN PGP MESSAGE-----") && qrStr.contains("-----END PGP MESSAGE-----")){
+                try {
+                    Uri uri = readToTempFile(qrStr);
+                    if (uri != null) {
+                        uris.add(uri);
+                        //remove the origin img data , replace by Decrypt Text
+                        uris.remove(0);
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @Nullable

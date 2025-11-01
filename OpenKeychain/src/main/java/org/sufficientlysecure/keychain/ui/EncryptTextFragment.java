@@ -412,8 +412,10 @@ public class EncryptTextFragment
                     Uri qrUir=getQRUir(qrCode);
                     if(qrUir!=null){
                         if(mSaveQRAfterEncrypt){
+                            mSaveQRAfterEncrypt=false;
                             saveQRCode(qrUir);
                         }else{
+                            mShareQRAfterEncrypt=false;
                             shareQRCode(qrUir);
                         }
                     }

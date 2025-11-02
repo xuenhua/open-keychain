@@ -401,7 +401,6 @@ public class EncryptTextFragment
     @Override
     public void onQueuedOperationSuccess(SignEncryptResult result) {
         super.onQueuedOperationSuccess(result);
-
         hideKeyboard();
 
         if (mShareAfterEncrypt) {
@@ -452,6 +451,9 @@ public class EncryptTextFragment
                     // 将二维码写入文件
                     qrCodeBitmap.compress(Bitmap.CompressFormat.PNG, 100, autoCloseOutputStream);
                     // autoCloseOutputStream 会在作用域结束时自动关闭
+                    if(!qrCodeBitmap.isRecycled()){
+                        qrCodeBitmap.recycle();
+                    }
                 } catch (Exception e) {
                     Timber.e(e,"Error writing QR code to file");
                     Notify.create(getActivity(), "Error writing QR code to file", Style.ERROR).show();

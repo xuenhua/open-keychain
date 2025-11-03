@@ -1,8 +1,16 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.8
+  * Fix the issue of the progress bar to freeze when click share button of EncryptText multiple times
+  * Optimize memory usage for QR code generation
+
 ## 6.0.4.7
   * Add QR Support with 'Select Input File'
   * Fix: display 2 times when decrypt QR
+
+## 6.0.4.6
+  * Add encrypted text save as QR code
+  * Add QR share to Decrypt
 
 ## 6.0.4.5
   * Add encrypted text QR code sharing

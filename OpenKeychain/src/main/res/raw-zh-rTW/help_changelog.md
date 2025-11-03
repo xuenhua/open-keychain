@@ -1,5 +1,9 @@
 [//]: # (NOTE: Please put every sentence in its own line, Transifex puts every line in its own translation field!)
 
+## 6.0.4.8
+  * 解决分享按钮多次点击进度条卡死
+  * 优化二维码内存占用
+
 ## 6.0.4.7
   * 从文件导入增加支持QR
   * 解决解密二维码时显示2次页面
